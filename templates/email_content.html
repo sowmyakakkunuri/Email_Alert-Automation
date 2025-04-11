@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Details</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Page Background */
+      body {
+        background-color: #333333; /* Ash background color */
+        color: #f0f0f0; /* Lighter text color for contrast */
+      }
+
+      /* Container for margin and padding */
+      .container {
+        max-width: 900px;
+      }
+
+      /* Header Style */
+      h1 {
+        color: #e0e0e0;
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      /* Card Styling */
+      .card {
+        background-color: #444444; /* Dark gray for cards */
+        color: #f0f0f0; /* Light text color */
+        border-radius: 10px;
+        border: 1px solid #555555;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Card Title Styling */
+      .card-title {
+        color: #00bcd4; /* Soft cyan for titles */
+        font-weight: bold;
+        font-size: 1.4rem;
+      }
+
+      /* Body of the email in a scrollable container */
+      pre {
+        background-color: #282828; /* Dark background for body */
+        color: #e0e0e0; /* Light gray text */
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #555555;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+        font-size: 1rem;
+      }
+
+      /* Button Styling */
+      .btn {
+        border-radius: 5px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+
+      .btn-secondary:hover {
+        background-color: #5a636b;
+        border-color: #545b62;
+      }
+
+      .btn-primary,
+      .btn-success {
+        padding: 10px 25px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 5px;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004085;
+      }
+
+      .btn-success {
+        background-color: #28a745;
+        border-color: #28a745;
+      }
+
+      .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+
+      /* Modal Styling */
+      .modal-content {
+        background-color: #444444;
+        border-radius: 10px;
+        border: 1px solid #555555;
+        color: #f0f0f0;
+      }
+
+      .modal-header,
+      .modal-footer {
+        border-bottom: 1px solid #555555;
+        border-top: 1px solid #555555;
+      }
+
+      .modal-header .btn-close {
+        background-color: #333333;
+        color: #f0f0f0;
+      }
+
+      .modal-body {
+        font-size: 1rem;
+        white-space: pre-wrap;
+      }
+
+      /* Editable Reply Styling */
+      .editable-reply {
+        background-color: #282828;
+        color: #e0e0e0;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #555555;
+        width: 100%;
+        min-height: 150px;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+
+      .editable-reply:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .send-btn {
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container my-4">
+      <h1 class="display-6 mb-4">Email Details</h1>
+
+      <!-- Generated Summary Section -->
+      {% if summary %}
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Generated Summary</h5>
+          <p class="card-text">{{ summary }}</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Email Information Card -->
+      <div
+        class="card shadow-sm mb-4"
+        data-email-to="{{ email.to }}"
+        data-email-from="{{ email.from }}"
+      >
+        <div class="card-body">
+          <h5 class="card-title">{{ email.subject }}</h5>
+          <p class="card-text">
+            <strong>From:</strong> {{ email.from or "Unknown" }}
+          </p>
+          <p class="card-text">
+            <strong>To:</strong> {{ email.to or "Unknown" }}
+          </p>
+          <p class="card-text">
+            <strong>Date:</strong> {{ email.date or "Unknown" }}
+          </p>
+          <p class="card-text"><strong>Body:</strong></p>
+          <pre>{{ email.body or "No content available" }}</pre>
+        </div>
+      </div>
+
+      <!-- Generated Reply Section -->
+      {% if reply %}
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Generated Reply</h5>
+          <textarea class="editable-reply" id="editableReply">
+{{ reply }}</textarea
+          >
+          <button class="btn btn-success send-btn" id="sendReplyBtn">
+            Send Mail
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Back Button -->
+      <a href="javascript:history.back()" class="btn btn-secondary"
+        >Back to Emails</a
+      >
+    </div>
+
+    <script>
+      document
+        .getElementById("sendReplyBtn")
+        .addEventListener("click", function () {
+          // Find the card containing email details
+          const card = document.querySelector(
+            ".card[data-email-to][data-email-from]"
+          );
+
+          // Validate that the card exists
+          if (!card) {
+            alert("Error: Email data not found.");
+            return;
+          }
+
+          // Get the reply content and validate
+          const replyContent = document.getElementById("editableReply")?.value;
+          if (!replyContent) {
+            alert("Error: Reply content is empty.");
+            return;
+          }
+
+          // Extract recipient and sender details from data attributes
+          const user = card.getAttribute("data-email-to");
+          const recipient = card.getAttribute("data-email-from");
+
+          // Send the reply using fetch
+          fetch("/send_email", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              recipient: recipient,
+              user: user,
+              content: replyContent,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                alert("Reply sent successfully!");
+              } else {
+                alert("Error: " + data.error);
+              }
+            })
+            .catch((error) => {
+              alert("Request failed: " + error.message);
+            });
+        });
+    </script>
+  </body>
+</html>

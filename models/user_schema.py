@@ -6,7 +6,5 @@ class UserSchema(BaseModel): # type: ignore
     email: EmailStr
     phone_number: Optional[str] = None  
     oauth_credentials: Dict[str, Any]
+    alert_system: Optional[bool]
     created_time: datetime  # Timestamp for when the user was created
-
-    # class Config:
-    #     orm_mode = True  # Makes it compatible with ORM models

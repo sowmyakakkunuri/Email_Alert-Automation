@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Alert System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      async function submitPhoneNumber() {
+        // const email = document.querySelector("#email").value;
+        const email = "{{ user['email'] }}";
+        const phone = document.querySelector("#phone").value;
+        console.log(email, phone);
+        try {
+          const response = await fetch(
+            `/alert_system?email=${encodeURIComponent(email)}`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({ phone: phone }), // Ensure URL-encoded format
+            }
+          );
+
+          if (response.ok) {
+            alert("Phone number updated successfully.");
+            location.reload(); // Reload to reflect changes
+          } else {
+            const result = await response.json();
+            alert(`Error: ${result.error || "An error occurred"}`);
+          }
+        } catch (error) {
+          alert("An error occurred while updating your phone number.");
+        }
+      }
+
+      async function disableAlertSystem() {
+        if (confirm("Are you sure you want to disable the alert system?")) {
+          // const email = document.querySelector("#email").value;
+          const email = "{{ user['email'] }}";
+
+          try {
+            const response = await fetch(`/disable-alert/${email}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (response.ok) {
+              alert("Alert system has been disabled successfully.");
+              document.getElementById("phone").value = ""; // Clear phone input
+              document.getElementById("submitButton").disabled = true; // Disable submit button
+            } else {
+              const result = await response.json();
+              alert(`Error: ${result.error || "An error occurred"}`);
+            }
+          } catch (error) {
+            alert(
+              "An error occurred while trying to disable the alert system."
+            );
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-gray-900 flex justify-center items-center h-screen">
+    <div class="bg-gray-800 p-10 rounded-lg shadow-lg w-full max-w-lg">
+      <h1 class="text-3xl font-bold mb-6 text-white">Alert System</h1>
+      <form method="POST" action="/alert_system?email={{ user['email'] }}">
+        <input
+          type="hidden"
+          id="email"
+          name="email"
+          value="{{ user['email'] }}"
+        />
+        <div class="mb-6">
+          <label for="phone" class="block text-gray-300 mb-2 text-lg"
+            >Phone Number</label
+          >
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            class="w-full border border-gray-600 rounded-lg p-3 text-white bg-gray-700 focus:outline-none focus:border-blue-500"
+            placeholder="Enter your phone number"
+            value="{{ user['phone_number'] if user['phone_number'] else '' }}"
+            required
+          />
+        </div>
+        <div class="flex justify-between gap-2">
+          <button
+            type="button"
+            id="submitButton"
+            onclick="submitPhoneNumber()"
+            class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Save Changes
+          </button>
+          <button
+            type="button"
+            onclick="disableAlertSystem()"
+            class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-500"
+          >
+            Disable Alert System
+          </button>
+        </div>
+      </form>
+      <div class="mt-6 w-full max-w-lg text-center">
+        <a
+          href="{{ url_for('home', email=user['email']) }}"
+          class="bg-blue-500 text-white py-2 px-6 rounded-lg hover:bg-blue-600 transition duration-300"
+        >
+          Home
+        </a>
+      </div>
+    </div>
+  </body>
+</html>

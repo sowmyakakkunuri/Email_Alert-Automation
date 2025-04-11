@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-900 flex justify-center items-center h-screen">
+    <div class="bg-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md">
+      <h1 class="text-3xl font-extrabold mb-6 text-white text-center">
+        Welcome Back
+      </h1>
+      <div class="mb-6">
+        <a
+          href="{{ url_for('read_emails',email=email) }}"
+          class="block bg-blue-600 text-white py-3 rounded-lg mb-4 text-center hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+        >
+          View Emails
+        </a>
+        <a
+          href="{{ url_for('alert_system', email=email) }}"
+          class="block bg-green-600 text-white py-3 rounded-lg mb-4 text-center hover:bg-green-700 transition duration-300 transform hover:scale-105"
+        >
+          Set Up Alert System
+        </a>
+      </div>
+      <a
+        href="{{ url_for('logout') }}"
+        class="block bg-red-600 text-white py-3 rounded-lg text-center hover:bg-red-700 transition duration-300 transform hover:scale-105"
+        >Logout</a
+      >
+    </div>
+  </body>
+</html>
